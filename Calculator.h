@@ -1,7 +1,7 @@
 #pragma once
-#include "IFunction.h"
-#include "Constant.cpp"
-#include "Variable.cpp"
+#include "Functions/IFunction.h"
+#include "Functions/Constant.cpp"
+#include "Functions/Variable.cpp"
 
 #include "FunctionHelper.h"
 
