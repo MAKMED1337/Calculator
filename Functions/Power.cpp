@@ -1,7 +1,7 @@
 #pragma once
 #include "IFunction.h"
 #include "IBinaryFunction.h"
-#include "FunctionHelper.h"
+#include "../FunctionHelper.h"
 
 #include <cassert>
 
@@ -23,7 +23,7 @@ public:
 		copy(std::move(args));
 	}
 
-	type calculate(values args) const override
+	type calculate(values const& args) const override
 	{
 		type base = todo[0]->calculate(args);
 		type exp = todo[1]->calculate(args);

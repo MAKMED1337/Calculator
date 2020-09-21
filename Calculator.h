@@ -28,7 +28,7 @@ public:
 		result = parse_binary(s).first;
 	}
 
-	type calculate(values v) const;
+	type calculate(values const& args) const;
 private:
 	std::unordered_map<std::string_view, std::shared_ptr<IFunction>> func;
 	std::array<binary_operator, alphabet_length> bin_op;

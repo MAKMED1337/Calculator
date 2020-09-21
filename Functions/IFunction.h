@@ -14,7 +14,7 @@ class IFunction
 {
 public:
 	virtual void build(child&& args) = 0;
-	virtual type calculate(values const& args, values const& v) const = 0;
+	virtual type calculate(values const& args) const = 0;
 
 	virtual std::unique_ptr<IFunction> create() const = 0;
 	virtual std::unique_ptr<IFunction> create(child&& args) const = 0;

@@ -14,7 +14,7 @@ public:
 		copy(std::move(args));
 	}
 
-	type calculate(values args) const override
+	type calculate(values const& args) const override
 	{
 		type res = 0;
 

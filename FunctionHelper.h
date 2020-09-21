@@ -1,6 +1,6 @@
 #pragma once
-#include "IFunction.h"
-#include "Constant.cpp"
+#include "Functions/IFunction.h"
+#include "Functions/Constant.cpp"
 
 #include <memory>
 #include <optional>

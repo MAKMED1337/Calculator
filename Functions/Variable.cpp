@@ -6,6 +6,8 @@
 class Variable final : public IFunction
 {
 public:
+	Variable() = default;
+
 	Variable(std::string_view s)
 	{
 		for (char c : s)
@@ -17,10 +19,9 @@ public:
 
 	void build(child&& args) override {}
 
-	type calculate(values args) const override
+	type calculate(values const& args) const override
 	{
-		return args.at(name)->calculate();
-		static_assert(0);
+		return args.at(name)->calculate(args);
 	}
 
 	factory(Variable)

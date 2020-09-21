@@ -1,5 +1,5 @@
 #pragma once
-#include "IFunction.h"
+#include "Functions/IFunction.h"
 
 #include <vector>
 #include <string>
@@ -14,7 +14,7 @@ public:
 		std::vector<std::string>&& _args) :
 		func(std::move(_func)), args(_args) {}
 
-	type call(child&& arguments, values&& _args) const
+	type call(child&& arguments) const
 	{
 		if (arguments.size() != args.size())
 			throw std::exception("Not enought arguments");
@@ -23,7 +23,7 @@ public:
 		for (size_t i = 0; i < args.size(); ++i)
 			m[args[i]] = std::move(arguments[i]);
 
-		return func->calculate(m, _args);
+		return func->calculate(m);
 	}
 private:
 	std::vector<std::string> args;
@@ -50,7 +50,7 @@ public:
 		if (it == funcs.end())
 			throw std::exception("No such function");
 
-		return it->second.call(std::move(arguments), std::move(args));
+		return it->second.call(std::move(arguments));
 	}
 private:
 	std::map<size_t, FunctionCaller> funcs;

@@ -10,7 +10,7 @@ public:
 
 	void build(child&& args) override {}
 
-	type calculate(values args) const override
+	type calculate(values const& args) const override
 	{
 		return value;
 	}

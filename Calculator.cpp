@@ -126,7 +126,7 @@ std::pair<std::unique_ptr<IFunction>, std::string_view>
 	return { std::move(f), s };
 }
 
-type Calculator::calculate(values v) const
+type Calculator::calculate(values const& args) const
 {
-	return result->calculate(v);
+	return result->calculate(args);
 }
