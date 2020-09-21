@@ -17,11 +17,11 @@ public:
 	struct binary_operator final
 	{
 		int64_t priority = not_operator, next_priority = not_operator;
-		std::shared_ptr<IFunction> func;
+		func_ptr func;
 	};
 
 	Calculator(std::string_view s,
-		std::unordered_map<std::string_view, std::shared_ptr<IFunction>> const& _func,
+		std::unordered_map<std::string_view, func_ptr> const& _func,
 		std::array<binary_operator, alphabet_length> const& _bin_op) :
 			func(_func), bin_op(_bin_op)
 	{
@@ -30,21 +30,21 @@ public:
 
 	type calculate(values const& args) const;
 private:
-	std::unordered_map<std::string_view, std::shared_ptr<IFunction>> func;
+	std::unordered_map<std::string_view, func_ptr> func;
 	std::array<binary_operator, alphabet_length> bin_op;
 
-	std::unique_ptr<IFunction> result;
+	func_ptr result;
 
 
-	std::unique_ptr<IFunction> parse_primitive(std::string_view s) const;
+	func_ptr parse_primitive(std::string_view s) const;
 
 	size_t parse_brackets(std::string_view s) const;
 	size_t parse_logical_unit(std::string_view s) const;
 
 	child parse_arguments(std::string_view s) const;
 
-	std::unique_ptr<IFunction> parse_unit(std::string_view s) const;
+	func_ptr parse_unit(std::string_view s) const;
 
-	std::pair<std::unique_ptr<IFunction>, std::string_view>
+	std::pair<func_ptr, std::string_view>
 		parse_binary(std::string_view s, int64_t priority = not_operator + 1) const;
 };

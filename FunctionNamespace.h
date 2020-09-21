@@ -27,7 +27,7 @@ public:
 	}
 private:
 	std::vector<std::string> args;
-	std::unique_ptr<IFunction> func;
+	func_ptr func;
 };
 
 class FunctionByName final
@@ -44,7 +44,7 @@ public:
 		funcs[cnt] = FunctionCaller(std::move(func), std::move(args));
 	}
 
-	type call(child&& arguments, values&& args) const
+	type call(child&& arguments) const
 	{
 		auto it = funcs.find(arguments.size());
 		if (it == funcs.end())

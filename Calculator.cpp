@@ -1,13 +1,13 @@
 #include "Calculator.h"
 
-std::unique_ptr<IFunction> Calculator::parse_primitive(std::string_view s) const
+func_ptr Calculator::parse_primitive(std::string_view s) const
 {
 	auto t = is_number<type>(s);
 
 	if (t)
-		return std::make_unique<Variable>(s);
+		return make(Variable)(s);
 	
-	return std::make_unique<Constant>(*t);
+	return make(Constant)(*t);
 }
 
 size_t Calculator::parse_brackets(std::string_view s) const
@@ -66,7 +66,7 @@ child Calculator::parse_arguments(std::string_view s) const
 	return res;
 }
 
-std::unique_ptr<IFunction> Calculator::parse_unit(std::string_view s) const
+func_ptr Calculator::parse_unit(std::string_view s)
 {
 	s = trim(s);
 	//std::cerr << "unit: " << s << "\n";
@@ -90,7 +90,7 @@ std::unique_ptr<IFunction> Calculator::parse_unit(std::string_view s) const
 	return x->second->create(std::move(args));
 }
 
-std::pair<std::unique_ptr<IFunction>, std::string_view>
+std::pair<func_ptr, std::string_view>
 	Calculator::parse_binary(std::string_view s, int64_t priority) const
 {
 	s = ltrim(s);
@@ -100,7 +100,7 @@ std::pair<std::unique_ptr<IFunction>, std::string_view>
 	if (ind == s.size())
 		return { parse_unit(s), "" };
 
-	std::unique_ptr<IFunction> f = parse_binary(s.substr(0, ind), not_operator + 1).first;
+	func_ptr f = parse_binary(s.substr(0, ind), not_operator + 1).first;
 	//if (s[0] == '-')
 	//	f = std::make_unique<Primitive>(0);
 
