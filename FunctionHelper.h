@@ -20,9 +20,9 @@ static std::optional<T> is_number(std::string_view s)
     return std::nullopt;
 }
 
-static std::unique_ptr<Constant> get_const(type t)
+static func_ptr get_const(type t)
 {
-    return std::make_unique<Constant>(t);
+    return make(Constant)(t);
 }
 
 template <class T>

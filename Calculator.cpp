@@ -5,9 +5,9 @@ func_ptr Calculator::parse_primitive(std::string_view s) const
 	auto t = is_number<type>(s);
 
 	if (t)
-		return make(Variable)(s);
-	
-	return make(Constant)(*t);
+		return make(Constant)(*t);
+		
+	return make(Variable)(s);
 }
 
 size_t Calculator::parse_brackets(std::string_view s) const
@@ -66,7 +66,7 @@ child Calculator::parse_arguments(std::string_view s) const
 	return res;
 }
 
-func_ptr Calculator::parse_unit(std::string_view s)
+func_ptr Calculator::parse_unit(std::string_view s) const
 {
 	s = trim(s);
 	//std::cerr << "unit: " << s << "\n";
@@ -100,9 +100,11 @@ std::pair<func_ptr, std::string_view>
 	if (ind == s.size())
 		return { parse_unit(s), "" };
 
-	func_ptr f = parse_binary(s.substr(0, ind), not_operator + 1).first;
-	//if (s[0] == '-')
-	//	f = std::make_unique<Primitive>(0);
+	func_ptr f;
+	if (s[0] == '-')
+		f = get_const(0);
+	else
+		f = parse_binary(s.substr(0, ind), not_operator + 1).first;
 
 	s = s.substr(ind);
 

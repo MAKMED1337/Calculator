@@ -28,7 +28,7 @@ public:
 #define factory(name)\
 virtual func_ptr create() const\
 {\
-	return make<name>();\
+	return make(name)();\
 }\
 \
 virtual func_ptr create(child&& args) const\

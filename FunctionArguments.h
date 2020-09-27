@@ -29,10 +29,10 @@ public:
 		superimpose(FunctionArgumentsData const& fad)
 	{
 		std::unordered_map<std::string, FunctionArguments> res;
-		size_t cnt = min(fad.names.size(), res.size());
+		size_t cnt = std::min(fad.names.size(), res.size());
 
 		for (size_t i = 0; i < fad.names.size(); ++i)
-			res[fad.names[i]] = v[i];
+			res[fad.names[i]].unite(v[i]);
 
 		if (fad.is_template)
 			for (size_t i = cnt; i < v.size(); ++i)

@@ -68,7 +68,7 @@ int main()
 
 	std::cout << std::setprecision(999) << f.calculate(vals) << "\n";
 
-	std::cerr << "test XXX\n";
+	std::cerr << "test:\n";
 	auto beg = get_ms();
 	for (int i = 0; i < 1e6; ++i)
 		Calculator(cmd, func, bin_op);
