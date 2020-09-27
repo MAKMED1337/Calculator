@@ -101,8 +101,13 @@ std::pair<func_ptr, std::string_view>
 		return { parse_unit(s), "" };
 
 	func_ptr f;
+	bool minus = false;
+
 	if (s[0] == '-')
+	{
+		minus = true;
 		f = get_const(0);
+	}
 	else
 		f = parse_binary(s.substr(0, ind), not_operator + 1).first;
 
@@ -112,7 +117,10 @@ std::pair<func_ptr, std::string_view>
 	{
 		auto priority_ = bin_op[s[0]].priority;
 		if (priority_ < priority)
-			break;
+			if (minus)
+				minus = false;
+			else
+				break;
 
 		auto x = parse_binary(s.substr(1), bin_op[s[0]].next_priority);
 

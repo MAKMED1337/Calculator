@@ -32,7 +32,7 @@ public:
 		size_t cnt = std::min(fad.names.size(), res.size());
 
 		for (size_t i = 0; i < fad.names.size(); ++i)
-			res[fad.names[i]].unite(v[i]);
+			res[fad.names[i]].v = { v[i] };
 
 		if (fad.is_template)
 			for (size_t i = cnt; i < v.size(); ++i)
@@ -45,6 +45,16 @@ public:
 			throw std::exception("Not enough arguments");
 		
 		return res;
+	}
+
+	auto cbegin()
+	{
+		return v.cbegin();
+	}
+
+	auto cend()
+	{
+		return v.cend();
 	}
 private:
 	std::vector<std::shared_ptr<IFunction>> v;

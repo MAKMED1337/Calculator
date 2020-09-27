@@ -7,6 +7,8 @@
 #include "Functions/Logarithm.cpp"
 #include "Functions/Division.cpp"
 
+#include "FunctionArguments.h"
+
 #include "Calculator.h"
 
 #include <iostream>
