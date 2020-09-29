@@ -7,8 +7,6 @@
 #include "Functions/Logarithm.cpp"
 #include "Functions/Division.cpp"
 
-#include "FunctionArguments.h"
-
 #include "Calculator.h"
 
 #include <iostream>
@@ -69,8 +67,12 @@ int main()
 	} while (true);
 
 	std::cout << std::setprecision(999) << f.calculate(vals) << "\n";
+#ifndef _DEBUG
+	system("pause");
+#endif
 
-	std::cerr << "test:\n";
+
+	/*std::cerr << "test:\n";
 	auto beg = get_ms();
 	for (int i = 0; i < 1e6; ++i)
 		Calculator(cmd, func, bin_op);
@@ -82,5 +84,5 @@ int main()
 		f.calculate(vals);
 	end = get_ms();
 
-	std::cerr << end - beg << " ms\n";
+	std::cerr << end - beg << " ms\n";*/
 }

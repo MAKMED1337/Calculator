@@ -21,7 +21,8 @@ public:
 
 	type calculate(values const& args) const override
 	{
-		return args.at(name)->calculate(args);
+		auto const& x = args.at(name);
+		return x.at(0)->calculate(args);
 	}
 
 	factory(Variable)

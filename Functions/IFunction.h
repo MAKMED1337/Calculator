@@ -1,4 +1,6 @@
 #pragma once
+//#include "FunctionArguments.h"
+
 #include <optional>
 #include <vector>
 #include <memory>
@@ -8,10 +10,47 @@ class IFunction;
 
 using type = long double;
 using func_ptr = std::shared_ptr<IFunction>;
-using values = std::unordered_map<std::string, func_ptr>;
+
+struct FunctionArgumentsData
+{
+	std::vector<std::string> names;
+	bool is_template = false;
+};
+
+class FunctionArguments final :
+	public std::vector<func_ptr>
+{
+public:
+	FunctionArguments() {}
+
+	FunctionArguments(func_ptr f);
+
+	void operator= (func_ptr f);
+
+	void unite(func_ptr f);
+
+	void unite(FunctionArguments const& fa);
+
+	std::unordered_map<std::string, FunctionArguments>
+		superimpose(FunctionArgumentsData const& fad) const;
+};
+
+using values = std::unordered_map<std::string,
+	FunctionArguments>;
+
 using child = std::vector<func_ptr>;
 
-#define make(T) std::make_shared<T>
+template <class T>
+std::shared_ptr<T> make()
+{
+	return std::make_shared<T>();
+}
+
+template <class T, class ...Y>
+std::shared_ptr<T> make(Y const& ...t)
+{
+	return std::make_shared<T>(t...);
+}
 
 class IFunction
 {
@@ -28,7 +67,7 @@ public:
 #define factory(name)\
 virtual func_ptr create() const\
 {\
-	return make(name)();\
+	return make<name>();\
 }\
 \
 virtual func_ptr create(child&& args) const\

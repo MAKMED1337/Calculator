@@ -5,9 +5,9 @@ func_ptr Calculator::parse_primitive(std::string_view s) const
 	auto t = is_number<type>(s);
 
 	if (t)
-		return make(Constant)(*t);
+		return make<Constant>(*t);
 		
-	return make(Variable)(s);
+	return make<Variable>(s);
 }
 
 size_t Calculator::parse_brackets(std::string_view s) const
