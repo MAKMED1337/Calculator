@@ -3,6 +3,8 @@
 #include "Functions/Constant.cpp"
 #include "Functions/Variable.cpp"
 
+#include "FunctionNamespace.h"
+
 #include "FunctionHelper.h"
 
 #include <iostream>
@@ -21,7 +23,7 @@ public:
 	};
 
 	Calculator(std::string_view s,
-		std::unordered_map<std::string_view, func_ptr> const& _func,
+		FunctionNamespace const& _func,
 		std::array<binary_operator, alphabet_length> const& _bin_op) :
 			func(_func), bin_op(_bin_op)
 	{
@@ -29,8 +31,13 @@ public:
 	}
 
 	type calculate(values const& args) const;
+
+	const func_ptr get_func() const
+	{
+		return result;
+	}
 private:
-	std::unordered_map<std::string_view, func_ptr> func;
+	FunctionNamespace func;
 	std::array<binary_operator, alphabet_length> bin_op;
 
 	func_ptr result;

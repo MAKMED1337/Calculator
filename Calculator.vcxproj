@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="Functions\Caller.cpp" />
     <ClCompile Include="Functions\Constant.cpp" />
     <ClCompile Include="Functions\Division.cpp" />
     <ClCompile Include="Functions\IFunction.cpp" />

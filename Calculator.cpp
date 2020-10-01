@@ -81,13 +81,13 @@ func_ptr Calculator::parse_unit(std::string_view s) const
 	if (it == 0)
 		return parse_binary(s.substr(1, s.size() - 2)).first;
 
-	auto x = func.find(s.substr(0, it));
-	if (!it && x == func.end())
-		throw std::exception("no such function");
-
 	child args = parse_arguments(s.substr(it + 1, s.size() - it - 2));
 
-	return x->second->create(std::move(args));
+	auto x = func.get(s.substr(0, it), args.size());
+	if(!x)
+		throw std::exception("no such function");
+
+	return x->create(std::move(args));
 }
 
 std::pair<func_ptr, std::string_view>

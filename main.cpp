@@ -12,7 +12,8 @@
 #include <iostream>
 #include <iomanip>
 
-std::unordered_map<std::string_view, std::shared_ptr<IFunction>> func;
+FunctionNamespace ns;
+//std::unordered_map<std::string_view, std::shared_ptr<IFunction>> func;
 
 std::array<Calculator::binary_operator, alphabet_length> bin_op;
 
@@ -26,6 +27,31 @@ long long get_ms()
 		).count();
 }
 
+void test()
+{
+	Calculator t("x ^ 2 + 3", ns, bin_op);
+	ns.AddFunction("t", t.get_func(), { {"x"}, false });
+
+	Calculator f("3 + t(y)", ns, bin_op);
+
+	values vals;
+
+	vals["y"] = get_const(3);
+
+	std::cout << std::setprecision(999) << f.calculate(vals) << "\n\n";
+}
+
+func_ptr get_func(std::vector<std::string> const& names, func_ptr&& f)
+{
+	uint64_t n = names.size();
+	std::vector<func_ptr> a(n);
+	for (uint64_t i = 0; i < n; ++i)
+		a[i] = make<Variable>(names[i]);
+
+	f->build(std::move(a));
+	return f;
+}
+
 int main()
 {
 	bin_op['+'] = { 0, 0, std::make_shared<Plus>() };
@@ -37,18 +63,40 @@ int main()
 	bin_op['^'] = { 1000, 1000, std::make_shared<Power>() };
 
 
-	func["plus"] = std::make_shared<Plus>();
-	func["minus"] = std::make_shared<Minus>();
-	func["mult"] = std::make_shared<Multiply>();
-	func["power"] = std::make_shared<Power>();
-	func["root"] = std::make_shared<Root>();
-	func["log"] = std::make_shared<Logarithm>();
-	func["div"] = std::make_shared<Division>();
+	ns.AddFunction("plus",
+		get_func({"x", "y"}, make<Plus>()),
+		{ {"x", "y"}, false });
+
+	ns.AddFunction("minus",
+		get_func({ "x", "y" }, make<Minus>()),
+		{ {"x", "y"}, false });
+
+	ns.AddFunction("mult",
+		get_func({ "x", "y" }, make<Multiply>()),
+		{ {"x", "y"}, false });
+
+	ns.AddFunction("power",
+		get_func({ "x", "y" }, make<Power>()),
+		{ {"x", "y"}, false });
+
+	ns.AddFunction("root",
+		get_func({ "x", "y" }, make<Root>()),
+		{ {"x", "y"}, false });
+
+	ns.AddFunction("log",
+		get_func({ "x", "y" }, make<Logarithm>()),
+		{ {"x", "y"}, false });
+
+	ns.AddFunction("div",
+		get_func({ "x", "y" }, make<Division>()),
+		{ {"x", "y"}, false });
 	
+	test();
+
 	std::string cmd;
 	std::getline(std::cin, cmd);
 
-	Calculator f(cmd, func, bin_op);
+	Calculator f(cmd, ns, bin_op);
 
 	values vals;
 

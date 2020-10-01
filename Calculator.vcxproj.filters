@@ -54,6 +54,9 @@
     <ClCompile Include="Functions\IFunction.cpp">
       <Filter>Исходные файлы\Functions</Filter>
     </ClCompile>
+    <ClCompile Include="Functions\Caller.cpp">
+      <Filter>Исходные файлы\Functions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Functions\IBinaryFunction.h">
