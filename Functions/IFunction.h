@@ -1,6 +1,4 @@
 #pragma once
-//#include "FunctionArguments.h"
-
 #include <optional>
 #include <vector>
 #include <memory>
@@ -11,32 +9,7 @@ class IFunction;
 using type = long double;
 using func_ptr = std::shared_ptr<IFunction>;
 
-struct FunctionArgumentsData
-{
-	std::vector<std::string> names;
-	bool is_template = false;
-};
-
-class FunctionArguments final :
-	public std::vector<func_ptr>
-{
-public:
-	FunctionArguments() {}
-
-	FunctionArguments(func_ptr f);
-
-	void operator= (func_ptr f);
-
-	void unite(func_ptr f);
-
-	void unite(FunctionArguments const& fa);
-
-	std::unordered_map<std::string, FunctionArguments>
-		superimpose(FunctionArgumentsData const& fad) const;
-};
-
-using values = std::unordered_map<std::string,
-	FunctionArguments>;
+using values = std::unordered_map<std::string, type>;
 
 using child = std::vector<func_ptr>;
 

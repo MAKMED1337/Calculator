@@ -1,5 +1,6 @@
 #pragma once
 #include "Functions/IFunction.h"
+#include "FunctionArguments.h"
 
 #include <vector>
 #include <string>
@@ -12,29 +13,20 @@ class FunctionCaller final
 public:
 	FunctionCaller() = default;
 
-	FunctionCaller(func_ptr _func, FunctionArgumentsData const& _args) :
+	FunctionCaller(func_ptr _func, FunctionArguments const& _args) :
 		func(std::move(_func)), args(_args) {}
 
-	type call(child const& arguments) const
+	type call(std::vector<type> const& arguments) const
 	{
-		FunctionArguments f;
-		for (auto const& i : arguments)
-			f.unite(i);
-		
-		return func->calculate(f.superimpose(args));
+		return func->calculate(args.superimpose(arguments));
 	}
 
 	operator bool() const
 	{
 		return func != nullptr;
 	}
-
-	const func_ptr get() const
-	{
-		return func;
-	}
 private:
-	FunctionArgumentsData args;
+	FunctionArguments args;
 	func_ptr func = nullptr;
 };
 
@@ -43,9 +35,9 @@ class FunctionByName final
 public:
 	FunctionByName() = default;
 
-	void AddFunction(func_ptr func, FunctionArgumentsData const& args)
+	void AddFunction(func_ptr func, FunctionArguments const& args)
 	{
-		if (args.is_template)
+		if (args.is_template())
 		{
 			if(temp)
 				throw std::exception("This function with template already exists");
@@ -53,7 +45,7 @@ public:
 			temp = FunctionCaller(func, args);
 		}
 
-		size_t cnt = args.names.size();
+		size_t cnt = args.size();
 
 		if (funcs.find(cnt) != funcs.end())
 			throw std::exception("This function alredy exists");
@@ -61,7 +53,7 @@ public:
 		funcs[cnt] = FunctionCaller(func, args);
 	}
 
-	type call(child const& arguments) const
+	type call(std::vector<type> const& arguments) const
 	{
 		auto it = funcs.find(arguments.size());
 		if (it == funcs.end())
@@ -75,16 +67,16 @@ public:
 		return it->second.call(arguments);
 	}
 
-	const func_ptr get(uint64_t cnt) const
+	FunctionCaller get(uint64_t cnt) const
 	{
 		auto it = funcs.find(cnt);
 		if (it != funcs.end())
-			return it->second.get();
+			return it->second;
 		
 		if (temp_cnt && temp_cnt <= cnt)
-			return temp.get();
+			return temp;
 
-		return nullptr;
+		throw std::exception("No such fucntion");
 	}
 private:
 	std::map<size_t, FunctionCaller> funcs;
@@ -96,23 +88,23 @@ class FunctionNamespace final
 {
 public:
 	void AddFunction(std::string_view name, func_ptr func,
-		FunctionArgumentsData const& args)
+		FunctionArguments const& args)
 	{
 		funcs[std::string(name)].AddFunction(func, args);
 	}
 
-	type call(std::string_view name, child const& arguments) const
+	type call(std::string_view name, std::vector<type> const& arguments) const
 	{
 		return funcs.at(std::string(name)).call(arguments);
 	}
 
-	const func_ptr get(std::string const& s, uint64_t cnt) const
+	FunctionCaller get(std::string const& s, uint64_t cnt) const
 	{
 		auto it = funcs.find(s);
 		if (it != funcs.end())
 			return it->second.get(cnt);
 
-		return nullptr;
+		throw std::exception("No such fucntion");
 	}
 
 	auto get(std::string_view s, uint64_t cnt) const

@@ -12,9 +12,14 @@ public:
 
 	void build(child&& args) override {}
 
-	type calculate(values const& args) const override
+	type calculate(values const& arguments) const override
 	{
-		return f.call(x);
+		size_t n = c.size();
+		std::vector<type> args(n);
+		for (size_t i = 0; i < n; ++i)
+			args[i] = c[i]->calculate(arguments);
+
+		return f.call(args);
 	}
 
 	factory(Caller)

@@ -144,10 +144,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Calculator.cpp" />
+    <ClCompile Include="FunctionArguments.cpp" />
     <ClCompile Include="Functions\Caller.cpp" />
     <ClCompile Include="Functions\Constant.cpp" />
     <ClCompile Include="Functions\Division.cpp" />
-    <ClCompile Include="Functions\IFunction.cpp" />
     <ClCompile Include="Functions\Logarithm.cpp" />
     <ClCompile Include="Functions\Minus.cpp" />
     <ClCompile Include="Functions\Multiply.cpp" />
@@ -159,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Calculator.h" />
+    <ClInclude Include="FunctionArguments.h" />
     <ClInclude Include="FunctionHelper.h" />
     <ClInclude Include="FunctionNamespace.h" />
     <ClInclude Include="Functions\IBinaryFunction.h" />

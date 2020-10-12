@@ -87,7 +87,7 @@ func_ptr Calculator::parse_unit(std::string_view s) const
 	if(!x)
 		throw std::exception("no such function");
 
-	return x->create(std::move(args));
+	return make_shared<Caller>(x, std::move(args));
 }
 
 std::pair<func_ptr, std::string_view>

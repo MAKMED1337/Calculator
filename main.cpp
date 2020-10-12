@@ -36,7 +36,7 @@ void test()
 
 	values vals;
 
-	vals["y"] = get_const(3);
+	vals["y"] = 3;
 
 	std::cout << std::setprecision(999) << f.calculate(vals) << "\n\n";
 }
@@ -111,7 +111,7 @@ int main()
 		type t;
 		std::cin >> t;
 
-		vals[name] = get_const(t);
+		vals[name] = t;
 	} while (true);
 
 	std::cout << std::setprecision(999) << f.calculate(vals) << "\n";
