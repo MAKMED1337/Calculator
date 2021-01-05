@@ -32,7 +32,7 @@ public:
 		result = parse_binary(s).first;
 	}
 
-	type calculate(values const& args) const;
+	type calculate(values const& args = {}, std::vector<type> const& templates = {}) const;
 
 	const func_ptr get_func() const
 	{

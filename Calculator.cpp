@@ -103,7 +103,7 @@ std::pair<func_ptr, std::string_view>
 	func_ptr f;
 	bool minus = false;
 
-	if (s[0] == '-')
+	if (s[0] == '-') //bug fix
 	{
 		minus = true;
 		f = get_const(0);
@@ -136,7 +136,7 @@ std::pair<func_ptr, std::string_view>
 	return { std::move(f), s };
 }
 
-type Calculator::calculate(values const& args) const
+type Calculator::calculate(values const& args, std::vector<type> const& templates) const
 {
-	return result->calculate(args);
+	return result->calculate(args, templates);
 }

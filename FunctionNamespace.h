@@ -18,7 +18,8 @@ public:
 
 	type call(std::vector<type> const& arguments) const
 	{
-		return func->calculate(args.superimpose(arguments));
+		auto x = args.superimpose(arguments);
+		return func->calculate(x.first, x.second);
 	}
 
 	operator bool() const

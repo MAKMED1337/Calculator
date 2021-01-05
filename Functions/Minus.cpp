@@ -1,28 +1,18 @@
 #pragma once
 #include "IFunction.h"
-#include "IBinaryFunction.h"
 
-#include <assert.h>
+#include <cassert>
 
-class Minus final  : public IBinaryFunction
+class Minus final  : public IFunction
 {
 public:
-	void build(child&& args) override
+	factory(Minus)
+protected:
+	type calculate(std::vector<type>&& args) const override
 	{
 		assert(args.size() == 2);
 
-		copy(std::move(args));
-	}
-
-	type calculate(values const& args) const override
-	{
-		type res = 0;
-
-		res += todo[0]->calculate(args);
-		res -= todo[1]->calculate(args);
-		
+		type res = args[0] - args[1];
 		return res;
 	}
-
-	factory(Minus)
 };

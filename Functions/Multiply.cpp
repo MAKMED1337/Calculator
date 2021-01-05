@@ -4,22 +4,17 @@
 class Multiply final  : public IFunction
 {
 public:
-	void build(child&& args) override
-	{
-		todo = std::move(args);
-	}
-
-	type calculate(values const& args) const override
+	factory(Multiply)
+protected:
+	type calculate(std::vector<type>&& args) const override
 	{
 		type res = 1;
 
-		for (auto const& t : todo)
-			res *= t->calculate(args);
+		for (auto const& t : args)
+			res *= t;
 
 		return res;
 	}
-
-	factory(Multiply)
 private:
 	child todo;
 };

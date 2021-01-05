@@ -10,12 +10,12 @@ public:
 
 	void build(child&& args) override {}
 
-	type calculate(values const& args) const override
+	factory(Constant)
+protected:
+	type calculate(std::vector<type>&& args) const override
 	{
 		return value;
 	}
-
-	factory(Constant)
 private:
-	type value;
+	type value = 0;
 };

@@ -12,7 +12,7 @@ public:
 	FunctionArguments(std::vector<std::string> _names, bool _have_template)
 		: names(_names), have_template(_have_template) {}
 
-	values superimpose(std::vector<type> const& args) const;
+	std::pair<values, std::vector<type>> superimpose(std::vector<type> const& args) const;
 
 	bool is_template() const { return have_template; }
 	size_t size() const { return names.size(); }

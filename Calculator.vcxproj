@@ -162,7 +162,6 @@
     <ClInclude Include="FunctionArguments.h" />
     <ClInclude Include="FunctionHelper.h" />
     <ClInclude Include="FunctionNamespace.h" />
-    <ClInclude Include="Functions\IBinaryFunction.h" />
     <ClInclude Include="Functions\IFunction.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

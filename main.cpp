@@ -38,7 +38,8 @@ void test()
 
 	vals["y"] = 3;
 
-	std::cout << std::setprecision(999) << f.calculate(vals) << "\n\n";
+	std::vector<type> a;
+	std::cout << f.calculate(vals, a) << "\n\n";
 }
 
 func_ptr get_func(std::vector<std::string> const& names, func_ptr&& f)
@@ -54,6 +55,8 @@ func_ptr get_func(std::vector<std::string> const& names, func_ptr&& f)
 
 int main()
 {
+	std::cout << std::setprecision(999);
+
 	bin_op['+'] = { 0, 0, std::make_shared<Plus>() };
 	bin_op['-'] = { 0, 1, std::make_shared<Minus>() };
 
@@ -111,7 +114,7 @@ int main()
 		type t;
 		std::cin >> t;
 
-		vals[name] = t;
+		vals[name] = { t };
 	} while (true);
 
 	std::cout << std::setprecision(999) << f.calculate(vals) << "\n";
