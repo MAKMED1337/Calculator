@@ -12,8 +12,7 @@
 #include <iostream>
 #include <iomanip>
 
-FunctionNamespace ns;
-//std::unordered_map<std::string_view, std::shared_ptr<IFunction>> func;
+std::shared_ptr<FunctionNamespace> ns = std::make_shared<FunctionNamespace>();
 
 std::array<Calculator::binary_operator, alphabet_length> bin_op;
 
@@ -30,7 +29,7 @@ long long get_ms()
 void test()
 {
 	Calculator t("x ^ 2 + 3", ns, bin_op);
-	ns.AddFunction("t", t.get_func(), { {"x"}, false });
+	ns->AddFunction("t", t.get_func(), { {"x"} });
 
 	Calculator f("3 + t(y)", ns, bin_op);
 
@@ -38,8 +37,15 @@ void test()
 
 	vals["y"] = 3;
 
-	std::vector<type> a;
-	std::cout << f.calculate(vals, a) << "\n\n";
+	std::cout << f.calculate(std::move(vals)) << "\n\n";
+
+	Calculator a("1", ns, bin_op);
+	ns->AddFunction("X", a.get_func(), { {} });
+
+	Calculator b("x * X(...)", ns, bin_op);
+	ns->AddFunction("X", b.get_func(), { {"x", "..."} });
+
+	std::cout << ns->call("X", {1, 2, 3, 4, 5}) << "\n\n";
 }
 
 func_ptr get_func(std::vector<std::string> const& names, func_ptr&& f)
@@ -66,33 +72,33 @@ int main()
 	bin_op['^'] = { 1000, 1000, std::make_shared<Power>() };
 
 
-	ns.AddFunction("plus",
+	ns->AddFunction("plus",
 		get_func({"x", "y"}, make<Plus>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 
-	ns.AddFunction("minus",
+	ns->AddFunction("minus",
 		get_func({ "x", "y" }, make<Minus>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 
-	ns.AddFunction("mult",
+	ns->AddFunction("mult",
 		get_func({ "x", "y" }, make<Multiply>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 
-	ns.AddFunction("power",
+	ns->AddFunction("power",
 		get_func({ "x", "y" }, make<Power>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 
-	ns.AddFunction("root",
+	ns->AddFunction("root",
 		get_func({ "x", "y" }, make<Root>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 
-	ns.AddFunction("log",
+	ns->AddFunction("log",
 		get_func({ "x", "y" }, make<Logarithm>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 
-	ns.AddFunction("div",
+	ns->AddFunction("div",
 		get_func({ "x", "y" }, make<Division>()),
-		{ {"x", "y"}, false });
+		{ {"x", "y"} });
 	
 	test();
 
@@ -117,7 +123,7 @@ int main()
 		vals[name] = { t };
 	} while (true);
 
-	std::cout << std::setprecision(999) << f.calculate(vals) << "\n";
+	std::cout << std::setprecision(999) << f.calculate(std::move(vals)) << "\n";
 #ifndef _DEBUG
 	system("pause");
 #endif

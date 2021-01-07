@@ -30,7 +30,7 @@ public:
 
 	void build(child&& args) override {}
 
-	type calculate(values const& args, std::vector<type> const& templates) const override
+	type calculate(values&& args, std::vector<type>&& templates) const override
 	{
 		return args.at(name);
 	}

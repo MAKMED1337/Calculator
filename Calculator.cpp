@@ -2,6 +2,9 @@
 
 func_ptr Calculator::parse_primitive(std::string_view s) const
 {
+	if (s == "...")
+		return nullptr;
+
 	auto t = is_number<type>(s);
 
 	if (t)
@@ -82,12 +85,7 @@ func_ptr Calculator::parse_unit(std::string_view s) const
 		return parse_binary(s.substr(1, s.size() - 2)).first;
 
 	child args = parse_arguments(s.substr(it + 1, s.size() - it - 2));
-
-	auto x = func.get(s.substr(0, it), args.size());
-	if(!x)
-		throw std::exception("no such function");
-
-	return make_shared<Caller>(x, std::move(args));
+	return make_shared<Caller>(s.substr(0, it), func, std::move(args));
 }
 
 std::pair<func_ptr, std::string_view>
@@ -136,7 +134,7 @@ std::pair<func_ptr, std::string_view>
 	return { std::move(f), s };
 }
 
-type Calculator::calculate(values const& args, std::vector<type> const& templates) const
+type Calculator::calculate(values&& args, std::vector<type>&& templates) const
 {
-	return result->calculate(args, templates);
+	return result->calculate(std::move(args), std::move(templates));
 }

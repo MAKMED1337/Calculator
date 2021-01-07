@@ -25,21 +25,21 @@ public:
 	};
 
 	Calculator(std::string_view s,
-		FunctionNamespace const& _func,
+		std::shared_ptr<FunctionNamespace> _func,
 		std::array<binary_operator, alphabet_length> const& _bin_op) :
 			func(_func), bin_op(_bin_op)
 	{
 		result = parse_binary(s).first;
 	}
 
-	type calculate(values const& args = {}, std::vector<type> const& templates = {}) const;
+	type calculate(values&& args = {}, std::vector<type>&& templates = {}) const;
 
 	const func_ptr get_func() const
 	{
 		return result;
 	}
 private:
-	FunctionNamespace func;
+	std::shared_ptr<FunctionNamespace> func;
 	std::array<binary_operator, alphabet_length> bin_op;
 
 	func_ptr result;

@@ -1,20 +1,49 @@
 #include "FunctionArguments.h"
 
-std::pair<values, std::vector<type>>
-	FunctionArguments::superimpose(std::vector<type> const& args) const
+FunctionArguments::FunctionArguments(std::vector<std::string>&& _names)
 {
-	std::pair<values, std::vector<type>> res;
-	size_t cnt = std::min(args.size(), size());
+	names = std::move(_names);
+	for (size_t i = 0; i < names.size(); ++i)
+		if (names[i] == "...")
+		{
+			if (is_template())
+				throw std::exception("2 or more templates in function");
+			
+			pos = i;
+		}
+}
 
-	for (size_t i = 0; i < args.size(); ++i)
-		res.first[names[i]] = { args[i] };
+std::pair<values, std::vector<type>>
+	FunctionArguments::superimpose(std::vector<type>&& args) const
+{
+	values vals;
+	std::vector<type> templates;
 
-	if (is_template())
-		for (size_t i = cnt; i < names.size(); ++i)
-			res.second.push_back(args[i]);
+	if (!is_template()) //always valid
+	{
+		if (names.size() != args.size()) //doesn't need but i want
+			throw std::exception("Arguments size didn't match");
 
-	if (cnt < args.size())
-		throw std::exception("Not enough arguments");
+		for (size_t i = 0; i < names.size(); ++i)
+			vals[names[i]] = args[i];
+	}
+	else
+	{
+		if (args.size() < size())
+			throw std::exception("Not enough arguments");
 
-	return res;
+		for (size_t i = 0; i < pos; ++i)
+			vals[names[i]] = args[i];
+
+		//args.size() - 1 = t + names.size() - 1
+		int64_t t = args.size() - names.size();
+		for (size_t i = names.size() - 1; i > pos; --i)
+			vals[names[i]] = args[t + i];
+
+		size_t last = t + pos;
+		for (size_t i = pos; i <= last; ++i)
+			templates.push_back(args[i]);
+	}
+
+	return { vals, templates };
 }

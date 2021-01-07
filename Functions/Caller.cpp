@@ -7,17 +7,18 @@ class Caller final : public IFunction
 public:
 	Caller() = default;
 
-	Caller(FunctionCaller const& _f, child&& a) :
-		f(_f) { todo = std::move(a); }
-
-	void build(child&& args) override {}
+	Caller(std::string_view s,
+		std::shared_ptr<FunctionNamespace> function_namespace, child&& a) :
+		name(std::string(s)), f(function_namespace)
+	{ build(std::move(a)); }
 
 	factory(Caller)
 protected:
 	type calculate(std::vector<type>&& args) const override
 	{
-		return f.call(std::move(args));
+		return f->call(name, std::move(args));
 	}
 private:
-	FunctionCaller f;
+	std::shared_ptr<FunctionNamespace> f;
+	std::string name;
 };
