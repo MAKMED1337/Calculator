@@ -14,6 +14,8 @@ public:
 
 	std::pair<values, std::vector<type>> superimpose(std::vector<type>&& args) const;
 
+	bool can_call(size_t size) const;
+
 	bool is_template() const { return pos != -1; }
 	size_t size() const { return names.size() - is_template(); }
 private:

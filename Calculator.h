@@ -21,39 +21,51 @@ public:
 	struct binary_operator final
 	{
 		int64_t priority = not_operator, next_priority = not_operator;
-		func_ptr func;
+		std::string name;
 	};
 
+	/*
+	dynamic namespace - finds, then call function when calculate called
+	static namespace - it inserts function on parsing
+
+	static namespace uses when function what we calls can be find in
+	static namespace and function what we call didnt use templates
+	otherwise use dynamic namespace
+	*/
 	Calculator(std::string_view s,
-		std::shared_ptr<FunctionNamespace> _func,
+		namespace_ptr _static_func,
+		namespace_ptr _dynamic_func,
 		std::array<binary_operator, alphabet_length> const& _bin_op) :
-			func(_func), bin_op(_bin_op)
+			static_func(_static_func), dynamic_func(_dynamic_func), bin_op(_bin_op)
 	{
 		result = parse_binary(s).first;
+		static_func.reset();
 	}
 
 	type calculate(values&& args = {}, std::vector<type>&& templates = {}) const;
 
-	const func_ptr get_func() const
+	cfunc_ptr get_result() const
 	{
 		return result;
 	}
 private:
-	std::shared_ptr<FunctionNamespace> func;
+	namespace_ptr static_func, dynamic_func;
 	std::array<binary_operator, alphabet_length> bin_op;
 
-	func_ptr result;
+	cfunc_ptr result;
 
 
-	func_ptr parse_primitive(std::string_view s) const;
+	cfunc_ptr get_function(std::string_view s, child&& args) const;
+
+	cfunc_ptr parse_primitive(std::string_view s) const;
 
 	size_t parse_brackets(std::string_view s) const;
 	size_t parse_logical_unit(std::string_view s) const;
 
 	child parse_arguments(std::string_view s) const;
 
-	func_ptr parse_unit(std::string_view s) const;
+	cfunc_ptr parse_unit(std::string_view s) const;
 
-	std::pair<func_ptr, std::string_view>
+	std::pair<cfunc_ptr, std::string_view>
 		parse_binary(std::string_view s, int64_t priority = not_operator + 1) const;
 };

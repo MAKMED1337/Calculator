@@ -9,23 +9,14 @@ class IFunction;
 using type = long double;
 
 //null means template
+using cfunc_ptr = std::shared_ptr<const IFunction>;
 using func_ptr = std::shared_ptr<IFunction>;
 
 using values = std::unordered_map<std::string, type>;
 
-using child = std::vector<func_ptr>;
+using child = std::vector<cfunc_ptr>;
 
-template <class T>
-std::shared_ptr<T> make()
-{
-	return std::make_shared<T>();
-}
-
-template <class T, class ...Y>
-std::shared_ptr<T> make(Y const& ...t)
-{
-	return std::make_shared<T>(t...);
-}
+#define namespace_ptr std::shared_ptr<const FunctionNamespace>
 
 class IFunction
 {
@@ -43,7 +34,7 @@ public:
 	}
 
 	virtual func_ptr create() const = 0;
-	virtual func_ptr create(child&& args) const = 0;
+	virtual cfunc_ptr create(child&& args) const = 0;
 
 	virtual ~IFunction() = default;
 protected:
@@ -68,10 +59,10 @@ protected:
 #define factory(name)\
 virtual func_ptr create() const override\
 {\
-	return make<name>();\
+	return std::make_shared<name>();\
 }\
 \
-virtual func_ptr create(child&& args) const override\
+virtual cfunc_ptr create(child&& args) const override\
 {\
 	auto t = create();\
 	t->build(std::move(args));\

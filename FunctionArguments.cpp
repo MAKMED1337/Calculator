@@ -13,6 +13,14 @@ FunctionArguments::FunctionArguments(std::vector<std::string>&& _names)
 		}
 }
 
+bool FunctionArguments::can_call(size_t sz) const
+{
+	if (is_template())
+		return size() >= sz;
+
+	return size() == sz;
+}
+
 std::pair<values, std::vector<type>>
 	FunctionArguments::superimpose(std::vector<type>&& args) const
 {

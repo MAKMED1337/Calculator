@@ -1,7 +1,7 @@
 #pragma once
 #include "IFunction.h"
 
-class Multiply final  : public IFunction
+class Multiply final : public IFunction
 {
 public:
 	factory(Multiply)

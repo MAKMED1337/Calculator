@@ -3,7 +3,7 @@
 
 #include <cassert>
 
-class Minus final  : public IFunction
+class Minus final : public IFunction
 {
 public:
 	factory(Minus)

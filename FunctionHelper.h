@@ -20,9 +20,9 @@ static std::optional<T> is_number(std::string_view s)
     return std::nullopt;
 }
 
-static func_ptr get_const(type t)
+static cfunc_ptr get_const(type t)
 {
-    return make<Constant>(t);
+    return std::make_shared<Constant>(t);
 }
 
 template <class T>

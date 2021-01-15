@@ -13,13 +13,31 @@ class FunctionCaller final
 public:
 	FunctionCaller() = default;
 
-	FunctionCaller(func_ptr _func, FunctionArguments&& _args) :
-		func(std::move(_func)), args(std::move(_args)) {}
+	FunctionCaller(cfunc_ptr _func, FunctionArguments&& _args)
+	{
+		SetFunction(_func, std::move(_args));
+	}
+
+	void SetFunction(cfunc_ptr _func, FunctionArguments&& _args)
+	{
+		func = std::move(_func);
+		args = std::move(_args);
+	}
+
+	bool can_call(size_t size) const
+	{
+		return args.can_call(size);
+	}
 
 	type call(std::vector<type>&& arguments) const
 	{
 		auto x = args.superimpose(std::move(arguments));
 		return func->calculate(std::move(x.first), std::move(x.second));
+	}
+
+	cfunc_ptr get() const
+	{
+		return func;
 	}
 
 	operator bool() const
@@ -28,7 +46,7 @@ public:
 	}
 private:
 	FunctionArguments args;
-	func_ptr func = nullptr;
+	cfunc_ptr func = nullptr;
 };
 
 class FunctionByName final
@@ -36,7 +54,7 @@ class FunctionByName final
 public:
 	FunctionByName() = default;
 
-	void AddFunction(func_ptr func, FunctionArguments&& args)
+	void AddFunction(cfunc_ptr func, FunctionArguments&& args)
 	{
 		if (args.is_template())
 		{
@@ -67,6 +85,23 @@ public:
 
 		return it->second.call(std::move(arguments));
 	}
+
+	const FunctionCaller* get(size_t size) const
+	{
+		auto it = funcs.find(size);
+		if (it != funcs.end())
+			return &it->second;
+
+		if (temp && temp.can_call(size))
+			return &temp;
+
+		return nullptr;
+	}
+
+	const FunctionCaller& get_or_create(size_t size)
+	{
+		return funcs[size];
+	}
 private:
 	std::map<size_t, FunctionCaller> funcs;
 	FunctionCaller temp;
@@ -78,7 +113,7 @@ class FunctionNamespace final
 public:
 	FunctionNamespace() = default;
 
-	void AddFunction(std::string&& name, func_ptr func,
+	void AddFunction(std::string&& name, cfunc_ptr func,
 		FunctionArguments&& args)
 	{
 		funcs[std::move(name)].AddFunction(func, std::move(args));
@@ -92,6 +127,20 @@ public:
 
 		return it->second.call(std::move(arguments));
 	}
-private:
+
+	const FunctionByName* get(std::string const& name) const
+	{
+		auto it = funcs.find(name);
+		if (it == funcs.end())
+			return nullptr;
+		
+		return &it->second;
+	}
+
+	const FunctionByName& get_or_create(std::string const& name)
+	{
+		return funcs[name];
+	}
+protected:
 	std::unordered_map<std::string, FunctionByName> funcs;
 };

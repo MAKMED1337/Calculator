@@ -1,6 +1,29 @@
 #include "Calculator.h"
 
-func_ptr Calculator::parse_primitive(std::string_view s) const
+cfunc_ptr Calculator::get_function(std::string_view s, child&& args) const
+{
+	bool temp = false;
+	for (auto const& i : args)
+		if (!i)
+			temp = true;
+	
+	auto x = static_func;
+	if (!temp && x)
+	{
+		auto y = x->get(std::string(s));
+		if (y)
+		{
+			auto z = y->get(args.size());
+			auto f = z->get();
+
+			return f->create(std::move(args));
+		}
+	}
+
+	return std::make_shared<const Caller>(s, dynamic_func, std::move(args));
+}
+
+cfunc_ptr Calculator::parse_primitive(std::string_view s) const
 {
 	if (s == "...")
 		return nullptr;
@@ -8,9 +31,9 @@ func_ptr Calculator::parse_primitive(std::string_view s) const
 	auto t = is_number<type>(s);
 
 	if (t)
-		return make<Constant>(*t);
+		return get_const(*t);
 		
-	return make<Variable>(s);
+	return std::make_shared<Variable>(s);
 }
 
 size_t Calculator::parse_brackets(std::string_view s) const
@@ -69,7 +92,7 @@ child Calculator::parse_arguments(std::string_view s) const
 	return res;
 }
 
-func_ptr Calculator::parse_unit(std::string_view s) const
+cfunc_ptr Calculator::parse_unit(std::string_view s) const
 {
 	s = trim(s);
 	//std::cerr << "unit: " << s << "\n";
@@ -85,10 +108,10 @@ func_ptr Calculator::parse_unit(std::string_view s) const
 		return parse_binary(s.substr(1, s.size() - 2)).first;
 
 	child args = parse_arguments(s.substr(it + 1, s.size() - it - 2));
-	return make_shared<Caller>(s.substr(0, it), func, std::move(args));
+	return get_function(s.substr(0, it), std::move(args));
 }
 
-std::pair<func_ptr, std::string_view>
+std::pair<cfunc_ptr, std::string_view>
 	Calculator::parse_binary(std::string_view s, int64_t priority) const
 {
 	s = ltrim(s);
@@ -98,7 +121,7 @@ std::pair<func_ptr, std::string_view>
 	if (ind == s.size())
 		return { parse_unit(s), "" };
 
-	func_ptr f;
+	cfunc_ptr f;
 	bool minus = false;
 
 	if (s[0] == '-') //bug fix
@@ -126,7 +149,7 @@ std::pair<func_ptr, std::string_view>
 		args[0] = std::move(f);
 		args[1] = std::move(x.first);
 
-		f = bin_op[s[0]].func->create(std::move(args));
+		f = get_function(bin_op[s[0]].name, std::move(args));
 
 		s = x.second;
 	}

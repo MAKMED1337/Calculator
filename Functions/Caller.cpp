@@ -8,7 +8,7 @@ public:
 	Caller() = default;
 
 	Caller(std::string_view s,
-		std::shared_ptr<FunctionNamespace> function_namespace, child&& a) :
+		namespace_ptr function_namespace, child&& a) :
 		name(std::string(s)), f(function_namespace)
 	{ build(std::move(a)); }
 
@@ -19,6 +19,6 @@ protected:
 		return f->call(name, std::move(args));
 	}
 private:
-	std::shared_ptr<FunctionNamespace> f;
+	namespace_ptr f;
 	std::string name;
 };
